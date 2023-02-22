@@ -7,14 +7,17 @@ from pandas import DataFrame
 import numpy as np
 from scipy.stats import f_oneway, shapiro
 from scipy.signal import savgol_filter, detrend
-from preproc_NIR import osc, msc, snv, simple_moving_average, centring, var_sel
+from preproc_NIR import osc, msc, snv, simple_moving_average, centring, var_sel, choosen_wl_filter
 from time import time
 db=read_excel('data-corn-feuille-t0.xlsx').dropna()
 dref=read_excel('data-corn-feuille-16h.xlsx').dropna()
 X=db.drop([db.columns[0],'Y1','Y2'],axis=1)
+wl=X.columns
 Xref=dref.drop([db.columns[0],'Y1','Y2'],axis=1)
 #"""
-X=DataFrame(savgol_filter(DataFrame(msc(X.iloc[:,:-1].values)),3,1,1))
+X=DataFrame(savgol_filter(DataFrame(msc(X.to_numpy())),3,1,1))
+X.columns=wl
+X=choosen_wl_filter("choozen_wavelengths_corn.xlsx",X)
 #"""
 #Y=db['Y2']
 #Y=[i-np.mean(db['Y1']) for i in db['Y1']]
@@ -33,7 +36,7 @@ diff=DataFrame(savgol_filter(diff,3,1,0))
 #"""
 j=0
 while True:
-    #x_train, x_test, y_train, y_test = train_test_split(X,Y,test_size=0.2,random_state=j)
+    x_train, x_test, y_train, y_test = train_test_split(X,Y,test_size=0.2,random_state=j)
     #income_groups=[y_train,y_test]
     #s,p=f_oneway(*income_groups)
     r2=[]

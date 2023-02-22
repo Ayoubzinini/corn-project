@@ -17,8 +17,8 @@ wl=X.columns
 dry_db=read_excel("data-corn-feuille-16h.xlsx")
 dry_db=dry_db.dropna()
 dry_spec=dry_db.drop(['Unnamed: 0','Y1','Y2'],axis=1)
-mean_dry_spec=mean(dry_spec.iloc[:,:-1].values,axis=0)
-X=DataFrame(savgol_filter(DataFrame(msc(X.iloc[:,:-1].values)),3,1,1))
+mean_dry_spec=mean(dry_spec.to_numpy(),axis=0)
+X=DataFrame(savgol_filter(DataFrame(msc(X.to_numpy())),3,1,1))
 Y=db['Y1']
 """
 msecv=[]

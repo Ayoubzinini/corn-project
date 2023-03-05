@@ -17,7 +17,7 @@ Xref=dref.drop([db.columns[0],'Y1','Y2'],axis=1)
 #"""
 X=DataFrame(savgol_filter(DataFrame(msc(X.to_numpy())),3,1,1))
 X.columns=wl
-X=choosen_wl_filter("choozen_wavelengths_corn.xlsx",X)
+X=choosen_wl_filter("choozen_wavelengths.xlsx",X)
 #"""
 #Y=db['Y2']
 #Y=[i-np.mean(db['Y1']) for i in db['Y1']]
@@ -75,7 +75,9 @@ print(DataFrame({
     "RDS":j
 },index=[0]))
 print((x_test.loc[x_test.index[0],]) @ model.coef_ + (np.mean(y_train) - np.dot(np.mean(x_train),model.coef_)))
-DataFrame({'C':[i[0] for i in model.coef_]}).to_json("coef.json")
+cf=[i[0] for i in model.coef_]
+cf.append(np.mean(y_train) - np.dot(np.mean(x_train),model.coef_)[0])
+DataFrame({'C':cf}).to_excel("coefs_model_corn.xlsx")
 print(model.predict([x_test.loc[x_test.index[0],]]))
 #"""
 """

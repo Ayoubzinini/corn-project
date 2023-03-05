@@ -48,7 +48,7 @@ while True:
         program_starts = time.time()
         while True:
           x_train, x_test, y_train, y_test = train_test_split(inp,Y,test_size=0.2,random_state=j)
-          pls=PLSRegression()
+          pls=PLSRegression(n_components=51)
           pls.fit(x_train,y_train)
           ycv = cross_val_predict(pls, x_train, y_train, cv=LeaveOneOut())
           now = time.time()
@@ -80,9 +80,12 @@ print("Train : ",r2_score(y_train,pls.predict(x_train)))
 coefs=[i[0] for i in pls.coef_]
 coefs.append((np.mean(y_train) - np.dot(np.mean(x_train),pls.coef_)))
 DataFrame({'C':coefs}).to_json("coefs_model_corn.json")
-choozen_idx=DataFrame(x_train).index
+choozen_idx=x_train.columns
 choozen_wl=wl[choozen_idx]
 DataFrame({'choozen wavelengths index':choozen_idx,'choozen wavelengths values':choozen_wl}).to_excel("choozen_wavelengths.xlsx")
+intercept=(np.mean(y_train) - np.dot(np.mean(x_train),pls.coef_))
+print((x_test.loc[x_test.index[0],]) @ pls.coef_ + intercept)
+print(pls.predict([x_test.loc[x_test.index[0],]]))
 """
 plot([i[0] for i in devise_bande(X,64)],[sqrt(i) for i in msecv],'--x')
 xlabel('Intervals')

@@ -11,6 +11,7 @@ from numpy import sqrt, mean
 import time
 import numpy as np
 db=read_excel("data-corn-feuille-t0.xlsx")
+#db=db.drop(['origine'],axis=1)
 db=db.dropna()
 X=db.drop(['Unnamed: 0','Y1','Y2'],axis=1)
 wl=X.columns
@@ -48,7 +49,7 @@ while True:
         program_starts = time.time()
         while True:
           x_train, x_test, y_train, y_test = train_test_split(inp,Y,test_size=0.2,random_state=j)
-          pls=PLSRegression(n_components=51)
+          pls=PLSRegression()
           pls.fit(x_train,y_train)
           ycv = cross_val_predict(pls, x_train, y_train, cv=LeaveOneOut())
           now = time.time()

@@ -1,6 +1,6 @@
 from sklearn.model_selection import KFold,cross_val_predict, LeaveOneOut
 from sklearn.metrics import mean_squared_error, mean_squared_log_error, max_error, r2_score, mean_absolute_error
-from sklearn.linear_model import LinearRegression
+from sklearn.svm import SVR
 from sklearn.model_selection import train_test_split, cross_val_score
 from sklearn.preprocessing import normalize, StandardScaler
 import seaborn as sns
@@ -18,7 +18,7 @@ X=db.drop([db.columns[0],'Y1','Y2'],axis=1)
 wl=X.columns
 X=DataFrame(savgol_filter(msc(X.to_numpy()),51,1,1))#
 X.columns=wl
-X=X[read_excel("C:/Users/hp/Downloads/corn_proj/corn_proj/choozen_wavelengths.xlsx")["choozen wavelengths values"]]
+#X=X[read_excel("C:/Users/hp/Downloads/corn_proj/corn_proj/choozen_wavelengths.xlsx")["choozen wavelengths values"]]
 Y=db['Y1']
 rescols=["r2c","r2cv","r2t","rmsec","rmsecv","rmset"]
 r2c,r2cv,r2t,rmsec,rmsecv,rmset=[],[],[],[],[],[]
@@ -29,16 +29,16 @@ while True:
   for i in range(1,30,1):
     pc = PCA(X, ncomp=i, method='nipals')
     x_train, x_test, y_train, y_test = train_test_split(DataFrame(pc.factors),Y,test_size=0.2,random_state=j)
-    model=LinearRegression()
+    model=SVR(C=10, epsilon=0.1,gamma=0.0001,kernel='linear')
     model.fit(x_train, y_train)
     r2.append(r2_score(model.predict(x_test),y_test))
     RMSE.append(mean_squared_error(model.predict(x_test),y_test))
-  pc = PCA(X, ncomp=1+RMSE.index(min(RMSE)), method='nipals')#
+  pc = PCA(X, ncomp=1+RMSE.index(min(RMSE)), method='nipals')
   x_train, x_test, y_train, y_test = train_test_split(DataFrame(pc.factors),Y,test_size=0.2,random_state=j)
-  model=LinearRegression()
+  model=SVR(C=10, epsilon=0.1,gamma=0.0001,kernel='rbf')
   model.fit(x_train, y_train)
-  RMSECV=abs(np.mean(cross_val_score(LinearRegression(), x_train, y_train, scoring='neg_root_mean_squared_error', cv=LeaveOneOut())))
-  R2CV=100*np.mean(cross_val_score(LinearRegression(), x_train, y_train, scoring='r2'))
+  RMSECV=abs(np.mean(cross_val_score(SVR(C=10, epsilon=0.1,gamma=0.0001,kernel='rbf'), x_train, y_train, scoring='neg_root_mean_squared_error', cv=LeaveOneOut())))
+  R2CV=100*np.mean(cross_val_score(SVR(C=10, epsilon=0.1,gamma=0.0001,kernel='rbf'), x_train, y_train, scoring='r2'))
   R2train=100*r2_score(y_train,model.predict(x_train))
   R2test=100*r2_score(y_test,model.predict(x_test))
   RMSEtrain=mean_squared_error(y_train,model.predict(x_train))

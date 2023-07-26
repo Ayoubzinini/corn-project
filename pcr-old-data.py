@@ -12,11 +12,14 @@ from scipy.stats import f_oneway, shapiro
 from scipy.signal import savgol_filter, detrend
 from preproc_NIR import osc, msc, snv, simple_moving_average, centring, var_sel, pow_trans
 from statsmodels.multivariate.pca import PCA
-file_name="DataMais"
-db=read_csv(file_name+'.csv',sep=';',decimal=',')
-X=db.drop(['moisture','oil','protien'],axis=1)
-#X=snv(DataFrame(savgol_filter(X,9,1,1)).iloc[:,:-1].values)
-Y=[i+j+k for i,j,k in zip(db['moisture'],db['oil'],db['protien'])]
+db=read_excel('data-corn-feuille-t0.xlsx').dropna()
+#X=db.drop(['moisture','oil','protien'],axis=1)
+X=db.drop([db.columns[0],'Y1','Y2'],axis=1)
+wl=X.columns
+X=DataFrame(savgol_filter(msc(X.to_numpy()),51,1,1))#
+X.columns=wl
+X=X[read_excel("C:/Users/hp/Downloads/corn_proj/corn_proj/choozen_wavelengths.xlsx")["choozen wavelengths values"]]
+Y=db['Y1']
 rescols=["r2c","r2cv","r2t","rmsec","rmsecv","rmset"]
 r2c,r2cv,r2t,rmsec,rmsecv,rmset=[],[],[],[],[],[]
 r2=[]

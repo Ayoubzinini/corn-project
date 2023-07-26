@@ -9,6 +9,7 @@ from scipy.stats import f_oneway, shapiro
 from scipy.signal import savgol_filter, detrend
 from preproc_NIR import osc, msc, snv, simple_moving_average, centring, var_sel
 from time import time
+import pickle
 db=read_excel('data-corn-feuille-t0.xlsx').dropna()
 dref=read_excel('data-corn-feuille-16h.xlsx').dropna()
 X=db.drop([db.columns[0],'Y1','Y2'],axis=1)
@@ -17,6 +18,7 @@ Xref=dref.drop([db.columns[0],'Y1','Y2'],axis=1)
 #"""
 X=DataFrame(savgol_filter(DataFrame(msc(X.to_numpy())),3,1,1))
 X.columns=wl
+X=X[read_excel("C:/Users/hp/Downloads/corn_proj/corn_proj/choozen_wavelengths.xlsx")["choozen wavelengths values"]]
 #X=choosen_wl_filter("choozen_wavelengths.xlsx",X)
 #"""
 #Y=db['Y2']
@@ -36,7 +38,7 @@ diff=DataFrame(savgol_filter(diff,3,1,0))
 #"""
 j=3
 while True:
-    #x_train, x_test, y_train, y_test = train_test_split(X,Y,test_size=0.2,random_state=j)
+    x_train, x_test, y_train, y_test = train_test_split(X,Y,test_size=0.2,random_state=j)
     #income_groups=[y_train,y_test]
     #s,p=f_oneway(*income_groups)
     r2=[]
@@ -79,6 +81,7 @@ cf=[i[0] for i in model.coef_]
 cf.append(np.mean(y_train) - np.dot(np.mean(x_train),model.coef_)[0])
 DataFrame({'C':cf}).to_excel("coefs_model_corn.xlsx")
 print(model.predict([x_test.loc[x_test.index[0],]]))
+pickle.dump(model, open("corn-model.pkl", "wb"))
 #"""
 """
 you should put the papers data in their right place

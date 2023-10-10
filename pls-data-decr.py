@@ -16,7 +16,7 @@ Xref=dref.drop(['Y1','Y2'],axis=1)
 #"""
 X=DataFrame(savgol_filter(DataFrame(msc(X.to_numpy())),3  ,1,1))
 X.columns=wl
-X=X[read_excel("C:/Users/hp/Downloads/corn_proj/corn_proj/choozen_wavelengths.xlsx")["choozen wavelengths values"]]
+X=X[read_excel("C:/Users/ayoub/Downloads/dwn/corn_proj/corn_proj/choozen_wavelengths.xlsx")["choozen wavelengths values"]]
 Y=db['Y1']
 #"""
 j=3

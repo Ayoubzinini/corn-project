@@ -1,13 +1,11 @@
-from preproc_NIR import devise_bande, msc, pow_trans, prep_log
-from sklearn.preprocessing import normalize, StandardScaler
-from sklearn.model_selection import KFold,cross_val_predict, LeaveOneOut
-from sklearn.metrics import mean_squared_error, mean_squared_log_error, max_error, r2_score, mean_absolute_error
+from preproc_NIR import devise_bande, msc
+from sklearn.model_selection import cross_val_predict, LeaveOneOut
+from sklearn.metrics import mean_squared_error, r2_score
 from sklearn.cross_decomposition import PLSRegression
-from sklearn.model_selection import train_test_split, cross_val_score
-from scipy.signal import savgol_filter, detrend
+from sklearn.model_selection import train_test_split
+from scipy.signal import savgol_filter
 from pandas import read_excel ,DataFrame
-from matplotlib.pyplot import plot, show, xlabel, ylabel, title
-from numpy import sqrt, mean
+from numpy import mean
 import time
 import numpy as np
 db=read_excel("data-corn-feuille-t0.xlsx")
